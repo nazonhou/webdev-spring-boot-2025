@@ -3,10 +3,11 @@ package bj.uac.ine.webdev.repositories;
 import bj.uac.ine.webdev.models.Product;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProductRepository {
-    private Map<Integer, Product> products;
+    private Map<Integer, Product> products = new HashMap<>();
 
     public void addProduct(Product product) {
         int productId = products.size() + 1;

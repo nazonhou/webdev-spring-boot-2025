@@ -1,12 +1,17 @@
 package bj.uac.ine.webdev.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class Cart {
-    private Map<Integer, Integer> products;
+    private final Map<Integer, Integer> products = new HashMap<>();
     private Client client;
 
     public void addProduct(Product product, int quantity) {
