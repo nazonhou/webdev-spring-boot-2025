@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 
 public class ProductRepository {
     private Map<Integer, Product> products = new HashMap<>();
+    private int idSeq = 0;
 
     public Product addProduct(Product product) {
-        int productId = products.size() + 1;
+        int productId = ++idSeq;
         product.setId(productId);
         products.put(productId, product);
         return product;
