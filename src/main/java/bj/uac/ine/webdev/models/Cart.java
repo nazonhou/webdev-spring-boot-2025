@@ -19,23 +19,10 @@ public class Cart {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_product",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
+    @OneToMany(mappedBy = "cart")
+    private List<CartProduct> cartProducts;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
-
-    public void addProduct(Product product, int quantity) {
-        this.products.add(product.getId(), quantity);
-    }
-
-    public void removeProduct(Product product) {
-        this.products.remove(product.getId());
-    }
 }
