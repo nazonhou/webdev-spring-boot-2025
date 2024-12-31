@@ -1,5 +1,6 @@
 package bj.uac.ine.webdev.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +30,6 @@ public class Product {
     private Integer quantity;
 
     @OneToMany(mappedBy = "product")
+    @JsonBackReference
     private List<CartProduct> cartProducts;
 }

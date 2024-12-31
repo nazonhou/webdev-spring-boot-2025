@@ -4,14 +4,16 @@ import bj.uac.ine.webdev.dtos.CreateProductDto;
 import bj.uac.ine.webdev.models.Product;
 import bj.uac.ine.webdev.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,32 +43,43 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(product.get());
     }
 
-//    @GetMapping("/filter")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Collection<Product> filterProducts(@RequestParam String query) {
-//        return productRepository.filterProducts(query);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public Product updateProduct(
-//            @PathVariable int id,
-//            @RequestBody CreateProductDto createProductDto
-//    ) {
-//        return productRepository.updateProduct(id, createProductDto);
-//    }
-//
-//    @DeleteMapping("{id}")
-//    public Product removeProduct(@PathVariable int id){
-//        return productRepository.removeProduct(id);
-//    }
-
-    @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<Map<String, String>> handleHttpClientErrorException(
-            HttpClientErrorException exception
+    @PutMapping("/{id}")
+    public Product updateProduct(
+            @PathVariable Long id,
+            @RequestBody CreateProductDto createProductDto
     ) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", exception.getMessage());
+        return productService.updateProduct(id, createProductDto);
+    }
 
-        return ResponseEntity.status(exception.getStatusCode()).body(response);
+    @DeleteMapping("{id}")
+    public Product deleteProduct(
+            @PathVariable Long id
+    ) {
+        return productService.deleteProduct(id);
+    }
+
+    @GetMapping("filter")
+    public List<Product> filterByName(
+            @RequestParam String name
+    ) {
+        return productService.getProductsStartingWith(name);
+    }
+
+    @GetMapping("pages")
+    public Page<Product> filterByName(
+            @RequestParam String name,
+            @RequestParam String perPage,
+            @RequestParam String page
+    ) {
+        Pageable pageable = PageRequest.of(
+                Integer.valueOf(page),
+                Integer.valueOf(perPage),
+                Sort.by(Sort.Order.desc("price"))
+        );
+
+        return productService.getProductsPageStartingWith(
+                name,
+                pageable
+        );
     }
 }

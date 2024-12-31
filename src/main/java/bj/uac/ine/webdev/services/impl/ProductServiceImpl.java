@@ -5,6 +5,11 @@ import bj.uac.ine.webdev.models.Product;
 import bj.uac.ine.webdev.repositories.ProductRepository;
 import bj.uac.ine.webdev.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +38,45 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Optional<Product> getProduct(Long id) {
         return productRepository.findById(id);
+    }
+
+    @Override
+    public Product updateProduct(Long id, CreateProductDto createProductDto) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new HttpClientErrorException("Product with ID " + id + " does not exists", HttpStatus.NOT_FOUND, "Not found", null, null, null);
+        }
+
+        product.get().setQuantity(createProductDto.quantity());
+        product.get().setName(createProductDto.name());
+        product.get().setPrice(createProductDto.price());
+        product.get().setColor(createProductDto.color());
+
+        return productRepository.save(product.get());
+    }
+
+    @Override
+    public Product deleteProduct(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new HttpClientErrorException("Product with ID " + id + " does not exists", HttpStatus.NOT_FOUND, "Not found", null, null, null);
+        }
+
+        productRepository.delete(product.get());
+
+        return product.get();
+    }
+
+    @Override
+    public List<Product> getProductsStartingWith(String name) {
+        return productRepository.getProductsByNameStartingWithOrderByPriceDesc(name, "blue",Sort.by(Sort.Order.desc("price")));
+    }
+
+    @Override
+    public Page<Product> getProductsPageStartingWith(String name, Pageable pageable) {
+        return productRepository.getProductsPageByNameStartingWithOrderByPriceDesc(name, "blue", pageable);
     }
 
 }

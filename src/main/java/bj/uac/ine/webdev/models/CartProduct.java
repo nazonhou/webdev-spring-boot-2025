@@ -1,5 +1,6 @@
 package bj.uac.ine.webdev.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class CartProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonManagedReference
     private Product product;
 
     private Integer quantity;
