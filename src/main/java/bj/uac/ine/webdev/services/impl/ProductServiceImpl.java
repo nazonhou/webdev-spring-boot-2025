@@ -1,6 +1,7 @@
 package bj.uac.ine.webdev.services.impl;
 
 import bj.uac.ine.webdev.dtos.CreateProductDto;
+import bj.uac.ine.webdev.exceptions.EntityNotFoundException;
 import bj.uac.ine.webdev.models.Product;
 import bj.uac.ine.webdev.repositories.ProductRepository;
 import bj.uac.ine.webdev.services.ProductService;
@@ -36,8 +37,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getProduct(Long id) {
-        return productRepository.findById(id);
+    public Product getProduct(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new EntityNotFoundException(
+                    "Product",
+                    "id",
+                    id.toString()
+            );
+        }
+
+        return product.get();
     }
 
     @Override
@@ -71,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsStartingWith(String name) {
-        return productRepository.getProductsByNameStartingWithOrderByPriceDesc(name, "blue",Sort.by(Sort.Order.desc("price")));
+        return productRepository.getProductsByNameStartingWithOrderByPriceDesc(name, "blue", Sort.by(Sort.Order.desc("price")));
     }
 
     @Override

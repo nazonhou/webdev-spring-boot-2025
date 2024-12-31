@@ -6,14 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
     Product createProduct(CreateProductDto createProductDto);
 
     List<Product> getProducts();
 
-    Optional<Product> getProduct(Long id);
+    Product getProduct(Long id);
 
     Product updateProduct(Long id, CreateProductDto createProductDto);
 

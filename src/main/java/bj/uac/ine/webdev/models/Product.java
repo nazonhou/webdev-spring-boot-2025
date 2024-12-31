@@ -20,13 +20,15 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
     private String color;
 
+    @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
     private Integer quantity;
 
     @OneToMany(mappedBy = "product")

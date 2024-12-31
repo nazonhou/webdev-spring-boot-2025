@@ -3,6 +3,7 @@ package bj.uac.ine.webdev.controllers;
 import bj.uac.ine.webdev.dtos.CreateProductDto;
 import bj.uac.ine.webdev.models.Product;
 import bj.uac.ine.webdev.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -28,19 +28,16 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody CreateProductDto createProductDto) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
         return new ResponseEntity<>(productService.createProduct(createProductDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") Long productId) {
-        Optional<Product> product = productService.getProduct(productId);
+        Product product = productService.getProduct(productId);
 
-        if (product.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(product.get());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(product);
     }
 
     @PutMapping("/{id}")
